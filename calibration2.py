@@ -10,6 +10,7 @@ objp[:,:2] = np.mgrid[0:7,0:6].T.reshape(-1,2)
 objpoints = [] # 3d point in real world space
 imgpoints = [] # 2d points in image plane.
 images = glob.glob('Resources\*.jpg')
+aptas = 0
 for fname in images:
     img = cv.imread(fname)
     gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
@@ -17,6 +18,7 @@ for fname in images:
     ret, corners = cv.findChessboardCorners(gray, (7,6), None)
     # If found, add object points, image points (after refining them)
     if ret == True:
+        aptas += 1
         objpoints.append(objp)
         corners2 = cv.cornerSubPix(gray,corners, (11,11), (-1,-1), criteria)
         imgpoints.append(corners)
@@ -58,3 +60,4 @@ cy = mtx[1,2]
 
 print('focal lenght (fx,fy): (', fx,',',fy,')')
 print('optical center (cx,cy): (', cx,',',cy,')')
+print('Número de imagenes aptas: ',aptas)
