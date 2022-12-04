@@ -9,7 +9,7 @@ objp[:,:2] = np.mgrid[0:7,0:6].T.reshape(-1,2)
 # Arrays to store object points and image points from all the images.
 objpoints = [] # 3d point in real world space
 imgpoints = [] # 2d points in image plane.
-images = glob.glob('Resources\*.jpg')
+images = glob.glob('Resources\left*.jpg')
 aptas = 0
 for fname in images:
     img = cv.imread(fname)
@@ -21,11 +21,11 @@ for fname in images:
         aptas += 1
         objpoints.append(objp)
         corners2 = cv.cornerSubPix(gray,corners, (11,11), (-1,-1), criteria)
-        imgpoints.append(corners)
+        imgpoints.append(corners2)
         # Draw and display the corners
         cv.drawChessboardCorners(img, (7,6), corners2, ret)
         cv.imshow('img', img)
-        cv.waitKey(500)
+        cv.waitKey(0)
 cv.destroyAllWindows()
 
 

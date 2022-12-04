@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import os
-import glob_prueba
+import glob
 
 # Defining the dimensions of checkerboard
 CHECKERBOARD = (6,9)

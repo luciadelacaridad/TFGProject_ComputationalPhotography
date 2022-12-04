@@ -27,7 +27,7 @@ for num in np.arange(1,len(images)+1):
         if ret == True:
             objpoints.append(objp)
             corners2 = cv.cornerSubPix(gray,corners, (11,11), (-1,-1), criteria)
-            imgpoints.append(corners)
+            imgpoints.append(corners2)
             # Draw and display the corners
             cv.drawChessboardCorners(img, (7,6), corners2, ret)
             #cv.imshow('img', img)
@@ -55,7 +55,11 @@ cv.destroyAllWindows()
 # REPRESENTACION DE LOS ERRORES
 
 x = np.arange(1,len(images)+1)
+default_x_ticks = range(len(x))
 
-plt.scatter(x, datos_errores)
+plt.scatter(default_x_ticks, datos_errores)
+plt.xticks(default_x_ticks,x)
+plt.title("Errores")
+plt.xlabel("Número de fotografías")
 plt.show()
 
