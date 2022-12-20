@@ -1,66 +1,57 @@
-import cv2
 import numpy as np
-import os
+import cv2 as cv
 import glob
 
-# Defining the dimensions of checkerboard
-CHECKERBOARD = (6,9)
-criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
 
-# Creating vector to store vectors of 3D points for each checkerboard image
-objpoints = []
-# Creating vector to store vectors of 2D points for each checkerboard image
-imgpoints = []
+#dimension del chessboard
+chessboard = (6,7)
 
-# Defining the world coordinates for 3D points
-objp = np.zeros((1, CHECKERBOARD[0] * CHECKERBOARD[1], 3), np.float32)
-objp[0, :, :2] = np.mgrid[0:CHECKERBOARD[0], 0:CHECKERBOARD[1]].T.reshape(-1, 2)
-prev_img_shape = None
+#termination criteria
+criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001)
 
-# Extracting path of individual image stored in a given directory
+#preparamos los puntos objeto
+objp = np.zeros((chessboard[0]*chessboard[1],3), np.float32)
+objp[:,:2] = np.mgrid[0:chessboard[1],0:chessboard[0]].T.reshape(-1,2) #puntos de la forma (0,0,0),(1,0,0),(2,0,0),etc
 
-img = cv2.imread(r'C:\Users\USER\PycharmProjects\TFGProject\2.png')
-gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-# Find the chess board corners
-# If desired number of corners are found in the image then ret = true
-ret, corners = cv2.findChessboardCorners(gray, CHECKERBOARD,
-                                             cv2.CALIB_CB_ADAPTIVE_THRESH + cv2.CALIB_CB_FAST_CHECK + cv2.CALIB_CB_NORMALIZE_IMAGE)
 
-"""
- If desired number of corner are detected,
- we refine the pixel coordinates and display 
- them on the images of checker board
- """
-if ret == True:
-    objpoints.append(objp)
-    # refining pixel coordinates for given 2d points.
-    corners2 = cv2.cornerSubPix(gray, corners, (11, 11), (-1, -1), criteria)
+# Arrays vacios para almacenar los puntos objeto y los puntos imagen
+objpoints = [] # 3d point in real world space
+imgpoints = [] # 2d points in image plane
 
-    imgpoints.append(corners2)
+#array con los paths de las imagenes que se van a utilizar
 
-     # Draw and display the corners
-    img = cv2.drawChessboardCorners(img, CHECKERBOARD, corners2, ret)
+images = glob.glob('Resources\*.jpg')
 
-cv2.imshow('img', img)
-cv2.waitKey(0)
+for fname in images:        #bucle para cada imagen
+    img = cv.imread(fname)
+    gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY) #pasa la imagen a blanco y negro
+    ret, corners = cv.findChessboardCorners(gray, (chessboard[1],chessboard[0]), None) #esta funcion encuentra las esquinas del chessboard
+    if ret == True:  #si el pattern ha sido detectado
+        objpoints.append(objp) #añade puntos objeto
+        corners2 = cv.cornerSubPix(gray,corners, (11,11), (-1,-1), criteria) #esta funcion refina el colocamiento de las esquinas
+        imgpoints.append(corners2) #añade los puntos imagen refinados
+        cv.drawChessboardCorners(img, (chessboard[1],chessboard[0]), corners2, ret) #dibuja los puntos en el chessboard
+        #cv.imshow('img', img)
+        #cv.waitKey()
+cv.destroyAllWindows()
 
-cv2.destroyAllWindows()
+#obtenemos la camera matrix, distortion coeffs, rotation and traslation vectors
 
-h, w = img.shape[:2]
+ret, mtx, dist, rvecs, tvecs = cv.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
 
-"""
-Performing camera calibration by 
-passing the value of known 3D points (objpoints)
-and corresponding pixel coordinates of the 
-detected corners (imgpoints)
-"""
-ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
+#print('focal length x:',mtx[0,0])
+#print('focal length y:',mtx[1,1])
+#print('optical centers (cx,cy)=(',mtx[0,2],',',mtx[1,2],')')
+#print('distortion coefficients:',dist)
+#print('translation vectors:',tvecs)
+#print('rotation vectors:',rvecs)
 
-print("Camera matrix : \n")
-print(mtx)
-print("dist : \n")
-print(dist)
-print("rvecs : \n")
-print(rvecs)
-print("tvecs : \n")
-print(tvecs)
+#guardamos los datos
+np.save('data/intrinsic_matrix.npy',mtx)
+np.save('data/distortion_coeffs.npy',dist)
+np.save('data/rotation_vecs.npy',rvecs)
+np.save('data/traslation_vecs.npy',tvecs)
+np.save('data/puntos_objeto.npy',objpoints)
+np.save('data/puntos_imagen.npy',imgpoints)
+
+
