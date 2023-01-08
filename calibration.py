@@ -4,7 +4,7 @@ import glob
 
 
 # dimension del chessboard
-chessboard = (6,7)
+chessboard = (7,7)
 
 # termination criteria
 criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001)
@@ -19,7 +19,7 @@ objpoints = [] # 3d point in real world space
 imgpoints = [] # 2d points in image plane
 
 # array con los paths de las imágenes que se van a utilizar
-images = glob.glob('Resources\*.jpg')
+images = glob.glob('prueba/calibrate_*.png')
 
 aptas = 0  # contador para ver cuantos patterns se detectan
 
@@ -33,29 +33,35 @@ for fname in images:        # bucle para cada imagen
         corners2 = cv.cornerSubPix(gray,corners, (11,11), (-1,-1), criteria) # esta funcion refina el colocamiento de las esquinas
         imgpoints.append(corners2) # añade los puntos imagen refinados
         cv.drawChessboardCorners(img, (chessboard[1],chessboard[0]), corners2, ret) # dibuja los puntos en el chessboard
-        #cv.imshow('img', img)
-        #cv.waitKey()
+        cv.imshow('img', img)
+        cv.waitKey()
 cv.destroyAllWindows()
 
 # obtenemos la camera matrix, distortion coeffs, rotation and traslation vectors
 
-ret, mtx, dist, rvecs, tvecs = cv.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
+ret, K, dist, rvecs, tvecs, stdDeviationsIntrinsics, stdDeviationsExtrinsics, perViewErrors= cv.calibrateCameraExtended(objpoints, imgpoints, gray.shape[::-1], None, None)
 
 print('Número de imágenes detectadas: ', aptas)
-print('focal length x:',mtx[0,0])
-print('focal length y:',mtx[1,1])
-print('optical centers (cx,cy)=(',mtx[0,2],',',mtx[1,2],')')
+print('focal length x:',K[0,0])
+print('focal length y:',K[1,1])
+print('optical centers (cx,cy)=(',K[0,2],',',K[1,2],')')
 print('distortion coefficients \n' ,'k1 = ',dist[0,0],'\n','k2 = ',dist[0,1],'\n','p1 = ',dist[0,2],'\n','p2 = ',dist[0,3],'\n','k3 = ',dist[0,4])
-print('translation vectors:',tvecs)
-print('rotation vectors:',rvecs)
+# print('translation vectors:',tvecs)
+# print('rotation vectors:',rvecs)
+# print('std intrinsics:',stdDeviationsIntrinsics)
+# print('std extrinsics:',stdDeviationsExtrinsics)
+# print('reprojection_errors:',perViewErrors)
+# print('distortion coeffs',dist)
+print('mean reprojection_error:',sum(perViewErrors) / len(objpoints))
+
+
 
 # guardamos los datos
 
-np.save('data/intrinsic_matrix.npy',mtx)
-np.save('data/distortion_coeffs.npy',dist)
-np.save('data/rotation_vecs.npy',rvecs)
-np.save('data/traslation_vecs.npy',tvecs)
-np.save('data/puntos_objeto.npy',objpoints)
-np.save('data/puntos_imagen.npy',imgpoints)
-
-
+# np.save('data2/intrinsic_matrix',K)
+# np.save('data2/distortion_coeffs',dist)
+# np.save('data2/rotation_vecs',rvecs)
+# np.save('data2/traslation_vecs',tvecs)
+# np.save('data2/puntos_objeto',objpoints)
+# np.save('data2/puntos_imagen',imgpoints)
+# np.save('data2/errors',perViewErrors)

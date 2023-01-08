@@ -1,9 +1,20 @@
-import matplotlib.font_manager
-from IPython.core.display import HTML
+import numpy as np
+import glob
+import cv2 as cv
+import matplotlib.pyplot as plt
+from matplotlib.ticker import FixedLocator
 
-def make_html(fontname):
-    return "<p>{font}: <span style='font-family:{font}; font-size: 24px;'>{font}</p>".format(font=fontname)
+# cargamos los datos
 
-code = "\n".join([make_html(font) for font in sorted(set([f.name for f in matplotlib.font_manager.fontManager.ttflist]))])
+K = np.load('data2/intrinsic_matrix.npy')
+dist = np.load('data2/distortion_coeffs.npy')
+rvecs = np.load('data2/rotation_vecs.npy')
+tvecs = np.load('data2/traslation_vecs.npy')
+objpoints = np.load('data2/puntos_objeto.npy')
+imgpoints = np.load('data2/puntos_imagen.npy')
+perViewErrors = np.load('data2/errors.npy')
 
-HTML("<div style='column-count: 2;'>{}</div>".format(code))
+img = cv.cvtColor( cv.imread('Resources/left01.jpg'), cv.COLOR_BGR2GRAY)
+print()
+
+
