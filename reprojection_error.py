@@ -5,17 +5,14 @@ from matplotlib.ticker import FixedLocator,IndexLocator
 
 # cargamos los datos
 
-mtx = np.load('data2/intrinsic_matrix.npy')
-dist = np.load('data2/distortion_coeffs.npy')
-rvecs = np.load('data2/rotation_vecs.npy')
-tvecs = np.load('data2/traslation_vecs.npy')
-objpoints = np.load('data2/puntos_objeto.npy')
-imgpoints = np.load('data2/puntos_imagen.npy')
-error_RMS = np.load('data2/errors.npy') # error de retroproyección RMS para cada imagen
-
-# error de retroproyeccion RMS medio
-
-mean_error_RMS = sum(error_RMS) / len(objpoints)
+mtx = np.load('prueba2_8x11/intrinsic_matrix.npy')
+dist = np.load('prueba2_8x11/distortion_coeffs.npy')
+rvecs = np.load('prueba2_8x11/rotation_vecs.npy')
+tvecs = np.load('prueba2_8x11/traslation_vecs.npy')
+objpoints = np.load('prueba2_8x11/puntos_objeto.npy')
+imgpoints = np.load('prueba2_8x11/puntos_imagen.npy')
+error_RMS = np.load('prueba2_8x11/errors.npy') # error de retroproyección RMS para cada imagen
+mean_error_RMS = np.load('prueba2_8x11/mean_error.npy')
 
 print('Mean RMS re-projection error: ',mean_error_RMS)
 
