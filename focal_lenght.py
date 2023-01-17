@@ -1,13 +1,14 @@
+# este programa calcula la distancia focal de la cámara sabiendo su matriz intrínseca K
+#
+
 import numpy as np
 import cv2 as cv
-
 
 
 # matriz intrínseca K
 K = np.load('data/intrinsic_matrix.npy')
 
 # tamaño de las imágenes en píxeles
-
 imageSize = (640,480)
 
 # widht and height of the sensor in mm (1/6'')
@@ -15,7 +16,6 @@ apertureWidht = 2.40
 apertureHeight = 1.80
 
 # calculamos las caracteristicas
-
 fovx, fovy, f, principalPoint, aspectRatio = cv.calibrationMatrixValues(K,imageSize,apertureWidht,apertureHeight)
 
 mx = K[0,0] / f

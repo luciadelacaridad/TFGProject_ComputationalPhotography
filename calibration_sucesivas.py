@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FixedLocator
 
 # dimension del chessboard
-chessboard = (7,7)
+chessboard = (9,6)
 
 # termination criteria
 criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001)
@@ -17,7 +17,7 @@ objp[:,:2] = np.mgrid[0:chessboard[1],0:chessboard[0]].T.reshape(-1,2) # puntos 
 
 # array con los paths de las imágenes que se van a utilizar
 
-images = glob.glob('prueba/calibrate_*.png')
+images = glob.glob('imagenes/*.png')
 
 x = []
 err = []
@@ -73,26 +73,26 @@ for j in range(len(images)):
     k3.append(dist[0,4])
 
 
-fig, ([ax1,ax2],[ax3,ax4]) = plt.subplots(2,2)
-# plt.scatter(x,err,label='error de retroproyeccion')
+# fig, ([ax1,ax2],[ax3,ax4]) = plt.subplots(2,2)
+plt.scatter(x,err,label='error de retroproyeccion')
 # ax.xaxis.set_major_locator(FixedLocator(np.arange(1,len(x)+1)))
-# plt.show()
-ax1.scatter(x,f_x,label='f_x')
-ax1.scatter(x,f_y,label='f_y')
-ax2.scatter(x,c_x,label='c_x')
-ax2.scatter(x,c_y,label='c_y')
-ax3.scatter(x,k1,label='k1')
-ax3.scatter(x,k2,label='k2')
-ax3.scatter(x,k3,label='k3')
-ax4.scatter(x,p1,label='p1')
-ax4.scatter(x,p2,label='p2')
 
-ax1.xaxis.set_major_locator(FixedLocator(np.arange(1,len(x)+1)))
-ax1.legend()
-ax2.xaxis.set_major_locator(FixedLocator(np.arange(1,len(x)+1)))
-ax2.legend()
-ax3.xaxis.set_major_locator(FixedLocator(np.arange(1,len(x)+1)))
-ax3.legend()
-ax4.xaxis.set_major_locator(FixedLocator(np.arange(1,len(x)+1)))
-ax4.legend()
+# ax1.scatter(x,f_x,label='f_x')
+# ax1.scatter(x,f_y,label='f_y')
+# ax2.scatter(x,c_x,label='c_x')
+# ax2.scatter(x,c_y,label='c_y')
+# ax3.scatter(x,k1,label='k1')
+# ax3.scatter(x,k2,label='k2')
+# ax3.scatter(x,k3,label='k3')
+# ax4.scatter(x,p1,label='p1')
+# ax4.scatter(x,p2,label='p2')
+#
+# ax1.xaxis.set_major_locator(FixedLocator(np.arange(1,len(x)+1)))
+# ax1.legend()
+# ax2.xaxis.set_major_locator(FixedLocator(np.arange(1,len(x)+1)))
+# ax2.legend()
+# ax3.xaxis.set_major_locator(FixedLocator(np.arange(1,len(x)+1)))
+# ax3.legend()
+# ax4.xaxis.set_major_locator(FixedLocator(np.arange(1,len(x)+1)))
+# ax4.legend()
 plt.show()

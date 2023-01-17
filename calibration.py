@@ -1,3 +1,7 @@
+# programa para calibrar una cámara
+# obtiene los parámetros intrínsecos y extrínsecos de una cámara
+
+
 import numpy as np
 import cv2 as cv
 import glob
@@ -29,25 +33,24 @@ for fname in images:        # bucle para cada imagen
     ret, corners = cv.findChessboardCorners(gray, (chessboard[1],chessboard[0]), None) # esta funcion encuentra las esquinas del chessboard
     if ret == True:  # si el pattern ha sido detectado
         aptas += 1
-        # cv.imwrite('imagenes/imagen'+str(aptas)+'.png',img)
         objpoints.append(objp) # añade puntos objeto
         corners2 = cv.cornerSubPix(gray,corners, (11,11), (-1,-1), criteria) # esta funcion refina el colocamiento de las esquinas
-        imgpoints.append(corners2) # añade los puntos
+        imgpoints.append(corners2) # añade los puntos imagen
 
         # puntos imagen refinados
         cv.drawChessboardCorners(img, (chessboard[1],chessboard[0]), corners2, ret) # dibuja los puntos en el chessboard
-        # cv.imshow('img'+str(aptas), img)
-        cv.imwrite('points/points_detected'+str(aptas)+'.png',img)
+        cv.imshow('img'+str(aptas), img)
+        cv.imwrite('points/points_detected'+str(aptas)+'.png',img) # guarda las imágenes con los puntos detectados
         cv.waitKey()
 
-    else: print('error ',aptas)
+    else: print('error en imagen número ',aptas)
 cv.destroyAllWindows()
 
-# obtenemos la camera matrix, distortion coeffs, rotation and traslation vectors
+# obtenemos la camera matrix, distortion coeffs, rotation and traslation vectors, std de los p. intrinsecos y extínsecos y el reprojection error RMS de cada imagen
 
 ret, K, dist, rvecs, tvecs, stdDeviationsIntrinsics, stdDeviationsExtrinsics, perViewErrors= cv.calibrateCameraExtended(objpoints, imgpoints, gray.shape[::-1], None, None)
 
-# error de retroproyección RMS
+# calculamos el reprojection error RMS medio
 
 mean_error_RMS = sum(perViewErrors) / len(objpoints)
 
@@ -59,10 +62,9 @@ print('distortion coefficients \n' ,'k1 = ',dist[0,0],'\n','k2 = ',dist[0,1],'\n
 # print('translation vectors:',tvecs)
 # print('rotation vectors:',rvecs)
 print('std intrinsics:',stdDeviationsIntrinsics)
-print('std extrinsics:',stdDeviationsExtrinsics)
-# print('reprojection_errors:',perViewErrors)
-# print('distortion coeffs',dist)
-print('mean reprojection_error:',mean_error_RMS)
+# print('std extrinsics:',stdDeviationsExtrinsics)
+print('reprojection errors:',perViewErrors)
+print('mean reprojection error:',mean_error_RMS)
 
 
 

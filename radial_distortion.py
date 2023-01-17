@@ -1,3 +1,7 @@
+# este programa dibuja líneas rectas entre puntos detectados en la imagen
+# para apreciar la distorsión radial
+
+
 import numpy as np
 import cv2 as cv
 import glob
@@ -12,24 +16,24 @@ imgpoints_all = np.load('data/puntos_imagen.npy')
 objpoints_all = np.load('data/puntos_objeto.npy')
 
 # imágenes a usar
-
-images = glob.glob('imagenes_corregidas/*.png')
+images = glob.glob('imagenes/*.png')
 
 # dimensión del tablero
-
 pattern = (9,6)
-numero_imagen = 0
-for i in range(len(images)):
-    numero_imagen+=1
-    # seleccionamos los parametros extrínsecos y los ptos imagen de la imagen
 
+numero_imagen = 0 # contador
+
+for i in range(len(images)):
+    numero_imagen += 1
+
+    # seleccionamos los ptos imagen de la imagen
     imgpoints = imgpoints_all[i]
 
     # definimos los 4 puntos de las esquinas del tablero
     p1x, p1y = imgpoints[0,0,0], imgpoints[0,0,1]
-    p2x, p2y = imgpoints[5,0,0], imgpoints[5,0,1]
-    p3x, p3y = imgpoints[48,0,0], imgpoints[48,0,1]
-    p4x, p4y = imgpoints[53,0,0], imgpoints[53,0,1]
+    p2x, p2y = imgpoints[pattern[1]-1,0,0], imgpoints[pattern[1]-1,0,1]
+    p3x, p3y = imgpoints[pattern[0]*pattern[1]-pattern[1],0,0], imgpoints[pattern[0]*pattern[1]-pattern[1],0,1]
+    p4x, p4y = imgpoints[pattern[0]*pattern[1]-1,0,0], imgpoints[pattern[0]*pattern[1]-1,0,1]
 
     # dibujamos las líneas sobre la imagen
     img = cv.imread(images[i])
@@ -40,6 +44,6 @@ for i in range(len(images)):
 
 
     cv.imshow('imagen',img)
-    cv.imwrite('distorsion_prueba/dibujo_corregida'+str(numero_imagen)+'.png',img)
+    cv.imwrite('distorsion_prueba/dibujo'+str(numero_imagen)+'.png',img)
     cv.waitKey()
 
