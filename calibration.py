@@ -4,7 +4,7 @@ import glob
 
 
 # dimension del chessboard
-chessboard = (8,5)
+chessboard = (9,6)
 
 # termination criteria
 criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001)
@@ -19,7 +19,7 @@ objpoints = [] # 3d point in real world space
 imgpoints = [] # 2d points in image plane
 
 # array con los paths de las imágenes que se van a utilizar
-images = glob.glob('prueba_6x9/*.jpg')
+images = glob.glob('imagenes/*.png')
 
 aptas = 0  # contador para ver cuantos patterns se detectan
 
@@ -29,13 +29,18 @@ for fname in images:        # bucle para cada imagen
     ret, corners = cv.findChessboardCorners(gray, (chessboard[1],chessboard[0]), None) # esta funcion encuentra las esquinas del chessboard
     if ret == True:  # si el pattern ha sido detectado
         aptas += 1
+        # cv.imwrite('imagenes/imagen'+str(aptas)+'.png',img)
         objpoints.append(objp) # añade puntos objeto
         corners2 = cv.cornerSubPix(gray,corners, (11,11), (-1,-1), criteria) # esta funcion refina el colocamiento de las esquinas
-        imgpoints.append(corners2) # añade los puntos imagen refinados
+        imgpoints.append(corners2) # añade los puntos
+
+        # puntos imagen refinados
         cv.drawChessboardCorners(img, (chessboard[1],chessboard[0]), corners2, ret) # dibuja los puntos en el chessboard
-        # cv.imshow('img', img)
-        # cv.waitKey()
-    else: print('error')
+        # cv.imshow('img'+str(aptas), img)
+        cv.imwrite('points/points_detected'+str(aptas)+'.png',img)
+        cv.waitKey()
+
+    else: print('error ',aptas)
 cv.destroyAllWindows()
 
 # obtenemos la camera matrix, distortion coeffs, rotation and traslation vectors
@@ -48,26 +53,28 @@ mean_error_RMS = sum(perViewErrors) / len(objpoints)
 
 print('Número de imágenes detectadas: ', aptas)
 print('focal length x:',K[0,0])
-# print('focal length y:',K[1,1])
-# print('optical centers (cx,cy)=(',K[0,2],',',K[1,2],')')
-# print('distortion coefficients \n' ,'k1 = ',dist[0,0],'\n','k2 = ',dist[0,1],'\n','p1 = ',dist[0,2],'\n','p2 = ',dist[0,3],'\n','k3 = ',dist[0,4])
+print('focal length y:',K[1,1])
+print('optical centers (cx,cy)=(',K[0,2],',',K[1,2],')')
+print('distortion coefficients \n' ,'k1 = ',dist[0,0],'\n','k2 = ',dist[0,1],'\n','p1 = ',dist[0,2],'\n','p2 = ',dist[0,3],'\n','k3 = ',dist[0,4])
 # print('translation vectors:',tvecs)
 # print('rotation vectors:',rvecs)
-# print('std intrinsics:',stdDeviationsIntrinsics)
-# print('std extrinsics:',stdDeviationsExtrinsics)
+print('std intrinsics:',stdDeviationsIntrinsics)
+print('std extrinsics:',stdDeviationsExtrinsics)
 # print('reprojection_errors:',perViewErrors)
 # print('distortion coeffs',dist)
-# print('mean reprojection_error:',mean_error_RMS)
+print('mean reprojection_error:',mean_error_RMS)
 
 
 
 # guardamos los datos
 
-np.save('prueba_6x9/intrinsic_matrix',K)
-np.save('prueba_6x9/distortion_coeffs',dist)
-np.save('prueba_6x9/rotation_vecs',rvecs)
-np.save('prueba_6x9/traslation_vecs',tvecs)
-np.save('prueba_6x9/puntos_objeto',objpoints)
-np.save('prueba_6x9/puntos_imagen',imgpoints)
-np.save('prueba_6x9/errors',perViewErrors)
-np.save('prueba_6x9/mean_error',mean_error_RMS)
+np.save('data/intrinsic_matrix',K)
+np.save('data/distortion_coeffs',dist)
+np.save('data/rotation_vecs',rvecs)
+np.save('data/traslation_vecs',tvecs)
+np.save('data/puntos_objeto',objpoints)
+np.save('data/puntos_imagen',imgpoints)
+np.save('data/errors',perViewErrors)
+np.save('data/mean_error',mean_error_RMS)
+np.save('data/std_intrinsics',stdDeviationsIntrinsics)
+np.save('data/std_extrinsics',stdDeviationsExtrinsics)

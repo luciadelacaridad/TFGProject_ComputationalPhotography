@@ -15,7 +15,7 @@ while(True):
     if key == ord('q'):
         break
     if key == ord('c'):
-        cv2.imwrite(f"prueba2_7x10/calibrate_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png", frame)
+        cv2.imwrite(f"prueba/calibrate_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png", frame)
 
 vs.stop()
 cv2.destroyAllWindows()

@@ -4,15 +4,15 @@ import cv2 as cv
 
 
 # matriz intrínseca K
-K = np.load('prueba/intrinsic_matrix.npy')
+K = np.load('data/intrinsic_matrix.npy')
 
 # tamaño de las imágenes en píxeles
-img = cv.cvtColor(cv.imread('prueba/calibrate_20221224_103930.png'), cv.COLOR_BGR2GRAY)
-imageSize = img.shape[::-1]
 
-# widht and height of the sensor in mm
-apertureWidht = 2.46
-apertureHeight = 1.8
+imageSize = (640,480)
+
+# widht and height of the sensor in mm (1/6'')
+apertureWidht = 2.40
+apertureHeight = 1.80
 
 # calculamos las caracteristicas
 

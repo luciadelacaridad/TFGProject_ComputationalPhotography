@@ -5,12 +5,12 @@ import matplotlib.pyplot as plt
 
 # cargamos los datos
 
-K = np.load('prueba2_8x11/intrinsic_matrix.npy')
-dist = np.load('prueba2_8x11/distortion_coeffs.npy')
-rvecs = np.load('prueba2_8x11/rotation_vecs.npy')
-tvecs = np.load('prueba2_8x11/traslation_vecs.npy')
-objpoints = np.load('prueba2_8x11/puntos_objeto.npy')
-imgpoints = np.load('prueba2_8x11/puntos_imagen.npy')
+K = np.load('data/intrinsic_matrix.npy')
+dist = np.load('data/distortion_coeffs.npy')
+rvecs = np.load('data/rotation_vecs.npy')
+tvecs = np.load('data/traslation_vecs.npy')
+objpoints = np.load('data/puntos_objeto.npy')
+imgpoints = np.load('data/puntos_imagen.npy')
 
 # preparamos los datos para cada imagen y los representamos
 
@@ -29,12 +29,14 @@ for i in range(len(objpoints)):
     ax1.plot(delta_x,delta_y,marker='+',label='imagen'+str(i+1),ls='')
 
 
-ax1.legend()
+# ax1.legend()
+plt.title('Error de cada de cada punto')
+plt.xlabel('Error en el eje $u$ en px')
+plt.ylabel('Error en el eje $v$ en px')
 plt.show()
 
 # guardamos los datos
-
-np.save('prueba2_8x11/delta_x_list',error_x)
-np.save('prueba2_8x11/delta_y_list',error_y)
+np.save('data/delta_x_list',error_x)
+np.save('data/delta_y_list',error_y)
 
 
